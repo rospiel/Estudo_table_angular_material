@@ -1,0 +1,91 @@
+<div class="course">
+
+    <h2>{{course?.description}}</h2>
+
+    <img class="course-thumbnail" [src]="course?.iconUrl">
+
+    <mat-form-field>
+        <!-- Declarando o input de pesquisa que faz uso do método no ts  -->
+        <input  matInput 
+                placeholder="Search lessons" 
+                #input > 
+    </mat-form-field>
+
+    <!-- Adicionando indicador de carregamento -->
+    <div    class="spinner-container" 
+            *ngIf="dataSource.loading$ | async" >
+        <mat-spinner></mat-spinner>
+    </div>
+    
+    <!-- Table Material declarando onde encontrar os dados no arquivo ts -->
+    <!-- mat -> indica que contém ordenação -->
+    <!-- matSortActive -> indica por qual coluna a ordenação iniciara -->
+    <!-- matSortDirection -> iniciara com qual direção de ordenação -->
+    <!-- matSortDisableClear -> remove a terceira opção que seria sem ordenação -->
+    <mat-table  class="lessons-table mat-elevation-z8" 
+                [dataSource]="dataSource" 
+                matSort 
+                matSortActive="seqNo" 
+                matSortDirection="asc" 
+                matSortDisableClear >
+        <!-- declarando o espaço da coluna -->
+        <ng-container matColumnDef="seqNo" >
+            <!-- declarando o header da coluna -->
+            <!-- mat-sort-header -> indica que terá ondenação -->
+            <mat-header-cell    *matHeaderCellDef 
+                                mat-sort-header >#</mat-header-cell>
+            <!-- declarando a celula da coluna -->
+            <mat-cell   class="description-cell"  
+                        *matCellDef="let lesson">{{lesson.seqNo}}</mat-cell>
+            <mat-cell mat-footer-cell *matFooterCellDef> Todos os cursos com custo de: </mat-cell>            
+        </ng-container>
+
+        <ng-container matColumnDef="description" >
+            <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+            <mat-cell  class="description-cell" *matCellDef="let lesson">{{lesson.description}}</mat-cell>
+            <mat-cell mat-footer-cell *matFooterCellDef></mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="duration" >
+            <mat-header-cell *matHeaderCellDef>Duration</mat-header-cell>
+            <mat-cell  class="description-cell" *matCellDef="let lesson">{{lesson.duration}}</mat-cell>
+            <mat-cell mat-footer-cell *matFooterCellDef> {{0 | currency}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="header-principal-courses">
+            <mat-header-cell    mat-header-cell 
+                                *matHeaderCellDef 
+                                [style.text-align]="center"
+                                [attr.colspan]="2"> 
+                Courses 
+            </mat-header-cell>
+        </ng-container>
+  
+  
+        <ng-container matColumnDef="header-principal-time">
+            <mat-header-cell    mat-header-cell 
+                                *matHeaderCellDef 
+                                [attr.colspan]="1"> 
+                Time 
+            </mat-header-cell>
+        </ng-container>
+
+        <mat-row mat-header-row *matHeaderRowDef="['header-principal-courses', 'header-principal-time']"></mat-row>
+  
+        <!-- declarando a linha do header por meio da propriedade no arquivo ts -->
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></mat-header-row>
+
+        <!-- declarando a linha das celular  -->
+        <mat-row *matRowDef="let row; columns: displayedColumns "></mat-row>
+        <mat-row mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-row>
+
+    </mat-table>
+
+    <!-- length -> qtde de itens da lista -->
+    <!-- pageSize -> qtde de registros por página -->
+    <!-- pageSizeOptions -> opções para mudar qtde de registros por página -->
+    <mat-paginator [length]="course?.lessonsCount" [pageSize]="3" [pageSizeOptions]="[3, 5, 10]" ></mat-paginator>
+
+</div>
+
+
